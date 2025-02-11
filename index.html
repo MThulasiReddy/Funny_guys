@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-width: 90vw;
+            width: 400px;
+        }
+        h1 {
+            color: #ff4e50;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            position: relative;
+            min-height: 50px;
+        }
+        button {
+            padding: 10px 30px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            width: 120px;
+            height: 45px;
+        }
+        .accept {
+            background: #28a745;
+            color: white;
+        }
+        .accept:hover {
+            transform: scale(1.1);
+        }
+        .reject {
+            background: #dc3545;
+            color: white;
+            position: static; /* Changed to static for initial positioning */
+        }
+        .reject.moving {
+            position: fixed; /* Will be added when movement starts */
+        }
+        .hidden {
+            display: none;
+            font-size: 24px;
+            color: #ff4e50;
+            margin-top: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .emoji-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            display: none;
+            overflow: hidden;
+        }
+        .emoji {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatUp 3s linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Will you be mine forever? ❤️</h1>
+        <div class="buttons">
+            <button class="accept" onclick="showCelebration()">Accept</button>
+            <button class="reject" onmouseover="moveButton(this)">Reject</button>
+        </div>
+        <div class="hidden" id="greeting">🎉 Yay! You made my life beautiful! ❤️💖🎊</div>
+    </div>
+    <div class="emoji-container" id="emoji-container"></div>
+
+    <script>
+        function moveButton(btn) {
+            // Add moving class to enable fixed positioning
+            btn.classList.add('moving');
+            
+            // Get viewport dimensions with padding
+            const padding = 20;
+            const maxX = window.innerWidth - btn.offsetWidth - padding;
+            const maxY = window.innerHeight - btn.offsetHeight - padding;
+            
+            // Generate random position within viewport
+            let x = Math.random() * maxX;
+            let y = Math.random() * maxY;
+            
+            // Keep button within viewport bounds
+            x = Math.max(padding, Math.min(x, maxX));
+            y = Math.max(padding, Math.min(y, maxY));
+            
+            // Apply new position
+            btn.style.left = `${x}px`;
+            btn.style.top = `${y}px`;
+        }
+
+        function showCelebration() {
+            document.getElementById('greeting').style.display = 'block';
+            document.getElementById('emoji-container').style.display = 'block';
+            for (let i = 0; i < 50; i++) {
+                createFloatingEmoji();
+            }
+        }
+
+        function createFloatingEmoji() {
+            const emojiArray = ['💖', '❤️', '💘', '💕', '💓', '💞', '😍', '😘'];
+            const emoji = document.createElement('div');
+            emoji.innerText = emojiArray[Math.floor(Math.random() * emojiArray.length)];
+            emoji.classList.add('emoji');
+            emoji.style.left = Math.random() * 100 + 'vw';
+            emoji.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.getElementById('emoji-container').appendChild(emoji);
+            setTimeout(() => {
+                emoji.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
