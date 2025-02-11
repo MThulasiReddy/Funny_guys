@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proposal Page</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23ff4e50' d='M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748z'/></svg>">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -60,10 +61,10 @@
         .reject {
             background: #dc3545;
             color: white;
-            position: static; /* Changed to static for initial positioning */
+            position: static;
         }
         .reject.moving {
-            position: fixed; /* Will be added when movement starts */
+            position: fixed;
         }
         .hidden {
             display: none;
@@ -110,23 +111,18 @@
 
     <script>
         function moveButton(btn) {
-            // Add moving class to enable fixed positioning
             btn.classList.add('moving');
             
-            // Get viewport dimensions with padding
             const padding = 20;
             const maxX = window.innerWidth - btn.offsetWidth - padding;
             const maxY = window.innerHeight - btn.offsetHeight - padding;
             
-            // Generate random position within viewport
             let x = Math.random() * maxX;
             let y = Math.random() * maxY;
             
-            // Keep button within viewport bounds
             x = Math.max(padding, Math.min(x, maxX));
             y = Math.max(padding, Math.min(y, maxY));
             
-            // Apply new position
             btn.style.left = `${x}px`;
             btn.style.top = `${y}px`;
         }
