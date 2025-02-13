@@ -1,1 +1,1 @@
-View live at : https://thulasi-propose.vercel.app/
+View live at : https://funny-propose.vercel.app/
