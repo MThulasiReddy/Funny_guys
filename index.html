@@ -3,149 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proposing You</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23ff4e50' d='M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748z'/></svg>">
+    <title>Catch me if u can</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(to right, #ff9a9e, #fad0c4);
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
             overflow: hidden;
-            margin: 0;
-            padding: 20px;
         }
+
         .container {
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            text-align: center;
             max-width: 90vw;
             width: 400px;
         }
+
         h1 {
+            margin-bottom: 2rem;
             color: #ff4e50;
             font-size: 1.8rem;
-            margin-bottom: 30px;
         }
+
         .buttons {
-            margin-top: 20px;
             display: flex;
             justify-content: center;
-            gap: 50px;
-            position: relative;
-            min-height: 50px;
+            gap: 2rem;
+            margin-top: 2rem;
         }
+
         button {
-            padding: 10px 30px;
-            font-size: 18px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
             border: none;
+            border-radius: 0.5rem;
             cursor: pointer;
-            border-radius: 10px;
             transition: transform 0.3s ease;
-            width: 120px;
-            height: 45px;
         }
+
         .accept {
-            background: #28a745;
+            background: #4CAF50;
             color: white;
         }
+
         .accept:hover {
             transform: scale(1.1);
+            background: #45a049;
         }
+
         .reject {
-            background: #dc3545;
+            background: #ff4444;
             color: white;
-            position: static;
+            position: relative;
         }
+
         .reject.moving {
             position: fixed;
+            z-index: 100;
         }
-        .hidden {
-            display: none;
-            font-size: 24px;
-            color: #ff4e50;
-            margin-top: 20px;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+
         .emoji-container {
             position: fixed;
             width: 100vw;
             height: 100vh;
-            top: 0;
-            left: 0;
             pointer-events: none;
             display: none;
             overflow: hidden;
         }
+
         .emoji {
             position: absolute;
             font-size: 2rem;
-            animation: floatUp 3s linear infinite;
+            animation: float-up 3s ease-out forwards;
+            opacity: 0;
         }
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        #greeting {
+            display: none;
+            margin-top: 1.5rem;
+            color: #ff4e50;
+            font-size: 1.5rem;
+            animation: pop-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes pop-in {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
+    <audio id="sound1" preload="auto">
+        <source src="audio1.mp3" type="audio/mpeg">
+        
+    </audio>
+    <audio id="sound2" preload="auto">
+        <source src="audio2.mp3" type="audio/mpeg">
+        
+    </audio>
+
     <div class="container">
         <h1>Will you be mine forever? ❤️</h1>
         <div class="buttons">
-            <button class="accept" onclick="showCelebration()">Accept</button>
+            <button class="accept" onclick="accept()">Accept</button>
             <button class="reject" onmouseover="moveButton(this)">Reject</button>
         </div>
-        <div class="hidden" id="greeting">🎉 Yay! You made my life beautiful! ❤️💖🎊</div>
+        <p id="greeting">🎉 Yay! You made my life complete! ❤️💖🎊</p>
     </div>
+
     <div class="emoji-container" id="emoji-container"></div>
 
     <script>
-        function moveButton(btn) {
-            btn.classList.add('moving');
+        function moveButton(button) {
+            const sound = document.getElementById('sound1');
+            sound.play();
             
-            const padding = 20;
-            const maxX = window.innerWidth - btn.offsetWidth - padding;
-            const maxY = window.innerHeight - btn.offsetHeight - padding;
+            button.classList.add('moving');
             
-            let x = Math.random() * maxX;
-            let y = Math.random() * maxY;
+            const maxX = window.innerWidth - button.offsetWidth;
+            const maxY = window.innerHeight - button.offsetHeight;
             
-            x = Math.max(padding, Math.min(x, maxX));
-            y = Math.max(padding, Math.min(y, maxY));
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
             
-            btn.style.left = `${x}px`;
-            btn.style.top = `${y}px`;
+            button.style.left = randomX + 'px';
+            button.style.top = randomY + 'px';
         }
 
-        function showCelebration() {
+        function accept() {
+
+            const sound = document.getElementById('sound2');
+            sound.play();
+
             document.getElementById('greeting').style.display = 'block';
-            document.getElementById('emoji-container').style.display = 'block';
-            for (let i = 0; i < 50; i++) {
-                createFloatingEmoji();
+            const emojiContainer = document.getElementById('emoji-container');
+            emojiContainer.style.display = 'block';
+            
+            // Create multiple emojis
+            for(let i = 0; i < 50; i++) {
+                setTimeout(() => createEmoji(), i * 50);
             }
         }
 
-        function createFloatingEmoji() {
-            const emojiArray = ['💖', '❤️', '💘', '💕', '💓', '💞', '😍', '😘'];
+        function createEmoji() {
+            const emojis = ['❤️', '💖', '💕', '💗', '💓', '💝', '💘', '😍'];
             const emoji = document.createElement('div');
-            emoji.innerText = emojiArray[Math.floor(Math.random() * emojiArray.length)];
-            emoji.classList.add('emoji');
+            emoji.className = 'emoji';
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Random position
             emoji.style.left = Math.random() * 100 + 'vw';
-            emoji.style.animationDuration = Math.random() * 3 + 2 + 's';
+            
             document.getElementById('emoji-container').appendChild(emoji);
+            
+            // Remove emoji after animation
             setTimeout(() => {
                 emoji.remove();
-            }, 5000);
+            }, 3000);
         }
     </script>
 </body>
